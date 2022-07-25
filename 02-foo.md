@@ -10,27 +10,26 @@
 ```r
 data <- read.csv('myopia.csv')
 library(knitr)
+```
+
+```
+## Warning: 程辑包'knitr'是用R版本4.1.3 来建造的
+```
+
+```r
 knitr::kable(head(data)) 
 ```
 
 
-\begin{tabular}{r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
-\hline
-ID & STUDYYEAR & MYOPIC & AGE & GENDER & SPHEQ & AL & ACD & LT & VCD & SPORTHR & READHR & COMPHR & STUDYHR & TVHR & DIOPTERHR & MOMMY & DADMY\\
-\hline
-1 & 1992 & 1 & 6 & 1 & -0.052 & 21.89 & 3.690 & 3.498 & 14.70 & 45 & 8 & 0 & 0 & 10 & 34 & 1 & 1\\
-\hline
-2 & 1995 & 0 & 6 & 1 & 0.608 & 22.38 & 3.702 & 3.392 & 15.29 & 4 & 0 & 1 & 1 & 7 & 12 & 1 & 1\\
-\hline
-3 & 1991 & 0 & 6 & 1 & 1.179 & 22.49 & 3.462 & 3.514 & 15.52 & 14 & 0 & 2 & 0 & 10 & 14 & 0 & 0\\
-\hline
-4 & 1990 & 1 & 6 & 1 & 0.525 & 22.20 & 3.862 & 3.612 & 14.73 & 18 & 11 & 0 & 0 & 4 & 37 & 0 & 1\\
-\hline
-5 & 1995 & 0 & 5 & 0 & 0.697 & 23.29 & 3.676 & 3.454 & 16.16 & 14 & 0 & 0 & 0 & 4 & 4 & 1 & 0\\
-\hline
-6 & 1995 & 0 & 6 & 0 & 1.744 & 22.14 & 3.224 & 3.556 & 15.36 & 10 & 6 & 2 & 1 & 19 & 44 & 0 & 1\\
-\hline
-\end{tabular}
+
+| ID| STUDYYEAR| MYOPIC| AGE| GENDER|  SPHEQ|    AL|   ACD|    LT|   VCD| SPORTHR| READHR| COMPHR| STUDYHR| TVHR| DIOPTERHR| MOMMY| DADMY|
+|--:|---------:|------:|---:|------:|------:|-----:|-----:|-----:|-----:|-------:|------:|------:|-------:|----:|---------:|-----:|-----:|
+|  1|      1992|      1|   6|      1| -0.052| 21.89| 3.690| 3.498| 14.70|      45|      8|      0|       0|   10|        34|     1|     1|
+|  2|      1995|      0|   6|      1|  0.608| 22.38| 3.702| 3.392| 15.29|       4|      0|      1|       1|    7|        12|     1|     1|
+|  3|      1991|      0|   6|      1|  1.179| 22.49| 3.462| 3.514| 15.52|      14|      0|      2|       0|   10|        14|     0|     0|
+|  4|      1990|      1|   6|      1|  0.525| 22.20| 3.862| 3.612| 14.73|      18|     11|      0|       0|    4|        37|     0|     1|
+|  5|      1995|      0|   5|      0|  0.697| 23.29| 3.676| 3.454| 16.16|      14|      0|      0|       0|    4|         4|     1|     0|
+|  6|      1995|      0|   6|      0|  1.744| 22.14| 3.224| 3.556| 15.36|      10|      6|      2|       1|   19|        44|     0|     1|
 
 ## 用SPHEQ预测近视
 
@@ -38,36 +37,6 @@ ID & STUDYYEAR & MYOPIC & AGE & GENDER & SPHEQ & AL & ACD & LT & VCD & SPORTHR &
 library(tidyverse)
 ```
 
-```
-## Warning: replacing previous import 'lifecycle::last_warnings' by
-## 'rlang::last_warnings' when loading 'pillar'
-```
-
-```
-## Warning: replacing previous import 'lifecycle::last_warnings' by
-## 'rlang::last_warnings' when loading 'hms'
-```
-
-```
-## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
-```
-
-```
-## v ggplot2 3.3.5     v purrr   0.3.4
-## v tibble  3.1.7     v dplyr   1.0.7
-## v tidyr   1.1.3     v stringr 1.4.0
-## v readr   2.0.1     v forcats 0.5.1
-```
-
-```
-## Warning: 程辑包'tibble'是用R版本4.1.3 来建造的
-```
-
-```
-## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
 
 ```r
 data %>% 
@@ -76,10 +45,9 @@ data %>%
   theme_bw()
 ```
 
-![](02-foo_files/figure-latex/unnamed-chunk-2-1.pdf)<!-- --> 
+<img src="02-foo_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
-在这种情况下，“SPHEQ”显然会影响近视的存在，但不足以准确预测。 需要向模型添加更多属性以改进
-预测。 为此，需要检查每个属性与近视存在之间的相关性。
+在这种情况下，“SPHEQ”显然会影响近视的存在，但不足以准确预测。 需要向模型添加更多属性以改进预测。 为此，需要检查每个属性与近视存在之间的相关性。
 
 ## 绘制所有变量之间的相关性
 
@@ -99,18 +67,20 @@ library(corrplot)
 corrplot.mixed(cor(data))
 ```
 
-![](02-foo_files/figure-latex/unnamed-chunk-3-1.pdf)<!-- --> 
+<img src="02-foo_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 
 ```r
 corrplot(cor(data))
 ```
 
-![](02-foo_files/figure-latex/unnamed-chunk-3-2.pdf)<!-- --> 
+<img src="02-foo_files/figure-html/unnamed-chunk-4-2.png" width="672" />
+
+
 很明显，例如“DIOPTERHR”与“SPORTHR”、“TVHR”、“STUDYHR”、“COMPHR”和“READHR”高度相关。因此，“DIOPTERHR”变量不会包含在预测模型中 为了防止共线性问题
 
 ## 变量与近视之间的相关性
 
-再来看每个属性与近视的关联性如何
+再来看每个变量与近视的关联性如何
 
 ```r
 library(corrplot)

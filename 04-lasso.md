@@ -9,28 +9,26 @@ library(tidyverse)
 ```
 
 ```
-## Warning: replacing previous import 'lifecycle::last_warnings' by
-## 'rlang::last_warnings' when loading 'pillar'
-```
-
-```
-## Warning: replacing previous import 'lifecycle::last_warnings' by
-## 'rlang::last_warnings' when loading 'hms'
-```
-
-```
 ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 ```
 
 ```
-## v ggplot2 3.3.5     v purrr   0.3.4
+## v ggplot2 3.3.6     v purrr   0.3.4
 ## v tibble  3.1.7     v dplyr   1.0.7
-## v tidyr   1.1.3     v stringr 1.4.0
-## v readr   2.0.1     v forcats 0.5.1
+## v tidyr   1.1.4     v stringr 1.4.0
+## v readr   2.1.2     v forcats 0.5.1
+```
+
+```
+## Warning: 程辑包'ggplot2'是用R版本4.1.3 来建造的
 ```
 
 ```
 ## Warning: 程辑包'tibble'是用R版本4.1.3 来建造的
+```
+
+```
+## Warning: 程辑包'readr'是用R版本4.1.3 来建造的
 ```
 
 ```
@@ -49,10 +47,6 @@ myopia <- read.csv("myopia.csv") %>%
 
 ```r
 library(caret)
-```
-
-```
-## Warning: 程辑包'caret'是用R版本4.1.3 来建造的
 ```
 
 ```
@@ -132,7 +126,7 @@ library(glmnet)#岭回归、lasso、弹性网络模型
 ```
 
 ```
-## Warning: 程辑包'glmnet'是用R版本4.1.2 来建造的
+## Warning: 程辑包'glmnet'是用R版本4.1.3 来建造的
 ```
 
 ```
@@ -151,7 +145,7 @@ library(glmnet)#岭回归、lasso、弹性网络模型
 ```
 
 ```
-## Loaded glmnet 4.1-3
+## Loaded glmnet 4.1-4
 ```
 
 ```r
@@ -180,7 +174,7 @@ pcor <- correlations[,3] %>%
 corrplot.mixed(cor(myopia))
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-4-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-4-1.png" width="672" />
  “SPHEQ”, “ACD”, ‘’MOMMY”, “DADMY”, ”SPORTHR” , ”READHR”,”GENDER”
  
 ## 定义自变量，因变量
@@ -190,7 +184,7 @@ x <- as.matrix(train[,4:17])
 y <- train[,3]
 lambdas <- 10 ^ seq(8,-4,length=250)
 ```
-#
+## lasso
 
 ```r
 lasso <- glmnet(x,y,family = "binomial",alpha = 1)
@@ -272,7 +266,7 @@ print(lasso)
 plot(lasso,xvar="lambda",label = TRUE)
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-7-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 
 传入一个lambda值看看
 
@@ -309,14 +303,14 @@ lasso.cv <- cv.glmnet(x,y, alpha=1,  family="binomial")
 plot(lasso.cv)
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-9-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 
 ```r
 lasso.cv_auc <- cv.glmnet(x,y,alpha=1,family="binomial",type.measure = "auc")
 plot(lasso.cv_auc)
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-9-2.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-9-2.png" width="672" />
 
 横坐标是lambda的对数值，也就是惩罚力度，值越大，惩罚力度越大。纵坐标是模型的MSE(均方误差)。图形上方横坐标是自变量数量。随着lambda的增加，MSE不断变化。第一条虚线表示MSE最小值对应的lambda值，第二条虚线表示距离均方误差一个标准误时的lambda值（最优解）
 
@@ -329,7 +323,7 @@ coef(lasso.cv , s = c(1,0.1,0.01,0.001))
 ```
 ## 15 x 4 sparse Matrix of class "dgCMatrix"
 ##                    s1         s2          s3          s4
-## (Intercept) -1.906893 -1.7282362  0.16212541  4.02046678
+## (Intercept) -1.906893 -1.7282362  0.16212542  4.02046678
 ## AGE          .         .         -0.02171082 -0.10849682
 ## GENDER       .         .          0.04626298  0.32335354
 ## SPHEQ        .        -0.2400235 -2.82801562 -3.51734389
@@ -364,10 +358,10 @@ lasso.coef
 ```
 ## 15 x 1 sparse Matrix of class "dgCMatrix"
 ##                       s1
-## (Intercept) -0.470162310
+## (Intercept) -0.470162303
 ## AGE         -0.009058156
-## GENDER       0.015668468
-## SPHEQ       -2.694167376
+## GENDER       0.015668469
+## SPHEQ       -2.694167378
 ## AL           .          
 ## ACD          .          
 ## LT           .          
@@ -378,7 +372,7 @@ lasso.coef
 ## STUDYHR     -0.012574109
 ## TVHR         .          
 ## DIOPTERHR    .          
-## PARENTS      0.577869537
+## PARENTS      0.577869538
 ```
 
 我们可以试一下如果选择1s是什么情况
@@ -418,7 +412,7 @@ lasso.y <- predict(lasso,newx = newx,type = "response",s=0.01235)
 plot(lasso.y,test$MYOPIC,xlab="Predicted",ylab="Actual",main="lasso")
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-13-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-13-1.png" width="672" />
 
 
 ## 建立模型并绘制列线图
@@ -430,7 +424,15 @@ library(rms)
 ```
 
 ```
+## Warning: 程辑包'rms'是用R版本4.1.3 来建造的
+```
+
+```
 ## 载入需要的程辑包：Hmisc
+```
+
+```
+## Warning: 程辑包'Hmisc'是用R版本4.1.3 来建造的
 ```
 
 ```
@@ -508,7 +510,7 @@ nom1 <- nomogram(model,fun = plogis,fun.at=c(0.001,0.01,0.05,0.1,seq(0.2,0.8,by=
 plot(nom1)
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-15-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-15-1.png" width="672" />
 ### 列线图2
 
 ```r
@@ -538,7 +540,7 @@ plot(perf)
 abline(0,1)
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-17-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 
 ```r
 auc <- performance(pred,"auc")
@@ -571,7 +573,7 @@ cal1 <- calibrate(model,method = "boot",B=1000)
 plot(cal1,xlim=c(0,1.0),ylim=c(0,1.0))
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-19-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-19-1.png" width="672" />
 
 ```
 ## 
@@ -631,7 +633,7 @@ plotCalibration(xb)
 ## metrics='brier' in the call of Score.
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-21-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-21-1.png" width="672" />
 
 
 
@@ -649,7 +651,7 @@ library(corrplot)
 corrplot(collin , type="upper")
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-22-1.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 
 ```r
 M <- collin
@@ -705,7 +707,7 @@ corrplot(M, method="color", col=col(200),
          diag=FALSE )
 ```
 
-![](04-lasso_files/figure-latex/unnamed-chunk-22-2.pdf)<!-- --> 
+<img src="04-lasso_files/figure-html/unnamed-chunk-22-2.png" width="672" />
 
 
 ```r

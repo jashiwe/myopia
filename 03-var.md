@@ -27,28 +27,12 @@ x2 <- c("MYOPIC","AGE","GENDER","MOMMY","DADMY")
 library(tableone)
 ```
 
-```
-## Warning: 程辑包'tableone'是用R版本4.1.2 来建造的
-```
 
 ```r
 table1 <- CreateTableOne(vars = c(x1,x2),
                        data = data,
                        factorVars = x2,
                        strata=c("MYOPIC"),addOverall = F)
-```
-
-```
-## Warning: replacing previous import 'lifecycle::last_warnings' by
-## 'rlang::last_warnings' when loading 'pillar'
-```
-
-```
-## Warning: replacing previous import 'lifecycle::last_warnings' by
-## 'rlang::last_warnings' when loading 'hms'
-```
-
-```r
 results1 <- print(table1,shouwAllLevels=FALSE)
 ```
 
@@ -87,7 +71,6 @@ write.csv(results1,"table1.csv")
 
 ```r
 #如果不服从正态分布秩和检验、卡方检验
-library(tableone)
 table1 <- CreateTableOne(vars = c(x1,x2),
                        data = data,
                        factorVars = x2,
