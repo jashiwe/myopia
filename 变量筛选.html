@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>第 3 章 变量筛选 | 近视预测模型开发与验证</title>
+  <meta name="description" content="预测模型学习" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="第 3 章 变量筛选 | 近视预测模型开发与验证" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="预测模型学习" />
+  <meta name="github-repo" content="yihui/bookdown-chinese" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 3 章 变量筛选 | 近视预测模型开发与验证" />
+  
+  <meta name="twitter:description" content="预测模型学习" />
+  
+
+<meta name="author" content="张献伟" />
+
+
+<meta name="date" content="2022-07-25" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="数据.html"/>
+<link rel="next" href="lasso-logistic.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">近视预测模型开发</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>前言</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#致谢"><i class="fa fa-check"></i>致谢</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="author.html"><a href="author.html"><i class="fa fa-check"></i>作者简介</a></li>
+<li class="chapter" data-level="1" data-path="临床预测模型.html"><a href="临床预测模型.html"><i class="fa fa-check"></i><b>1</b> 临床预测模型</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="临床预测模型.html"><a href="临床预测模型.html#模型构建"><i class="fa fa-check"></i><b>1.1</b> 模型构建</a></li>
+<li class="chapter" data-level="1.2" data-path="临床预测模型.html"><a href="临床预测模型.html#模型评价"><i class="fa fa-check"></i><b>1.2</b> 模型评价</a></li>
+<li class="chapter" data-level="1.3" data-path="临床预测模型.html"><a href="临床预测模型.html#模型验证"><i class="fa fa-check"></i><b>1.3</b> 模型验证</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="数据.html"><a href="数据.html"><i class="fa fa-check"></i><b>2</b> 数据</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="数据.html"><a href="数据.html#数据集简介"><i class="fa fa-check"></i><b>2.1</b> 数据集简介</a></li>
+<li class="chapter" data-level="2.2" data-path="数据.html"><a href="数据.html#用spheq预测近视"><i class="fa fa-check"></i><b>2.2</b> 用SPHEQ预测近视</a></li>
+<li class="chapter" data-level="2.3" data-path="数据.html"><a href="数据.html#绘制所有变量之间的相关性"><i class="fa fa-check"></i><b>2.3</b> 绘制所有变量之间的相关性</a></li>
+<li class="chapter" data-level="2.4" data-path="数据.html"><a href="数据.html#变量与近视之间的相关性"><i class="fa fa-check"></i><b>2.4</b> 变量与近视之间的相关性</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="变量筛选.html"><a href="变量筛选.html"><i class="fa fa-check"></i><b>3</b> 变量筛选</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="变量筛选.html"><a href="变量筛选.html#先单后多"><i class="fa fa-check"></i><b>3.1</b> 先单后多</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="变量筛选.html"><a href="变量筛选.html#分类变量处理"><i class="fa fa-check"></i><b>3.1.1</b> 分类变量处理</a></li>
+<li class="chapter" data-level="3.1.2" data-path="变量筛选.html"><a href="变量筛选.html#制作table1"><i class="fa fa-check"></i><b>3.1.2</b> 制作table1</a></li>
+<li class="chapter" data-level="3.1.3" data-path="变量筛选.html"><a href="变量筛选.html#单因素logistic"><i class="fa fa-check"></i><b>3.1.3</b> 单因素logistic</a></li>
+<li class="chapter" data-level="3.1.4" data-path="变量筛选.html"><a href="变量筛选.html#多因素模型"><i class="fa fa-check"></i><b>3.1.4</b> 多因素模型</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="lasso-logistic.html"><a href="lasso-logistic.html"><i class="fa fa-check"></i><b>4</b> LASSO-Logistic</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="lasso-logistic.html"><a href="lasso-logistic.html#读入数据"><i class="fa fa-check"></i><b>4.1</b> 读入数据</a></li>
+<li class="chapter" data-level="4.2" data-path="lasso-logistic.html"><a href="lasso-logistic.html#将数据集分成训练集和测试集"><i class="fa fa-check"></i><b>4.2</b> 将数据集分成训练集和测试集</a></li>
+<li class="chapter" data-level="4.3" data-path="lasso-logistic.html"><a href="lasso-logistic.html#加载包"><i class="fa fa-check"></i><b>4.3</b> 加载包</a></li>
+<li class="chapter" data-level="4.4" data-path="lasso-logistic.html"><a href="lasso-logistic.html#定义自变量因变量"><i class="fa fa-check"></i><b>4.4</b> 定义自变量，因变量</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>5</b> </a>
+<ul>
+<li class="chapter" data-level="5.0.1" data-path="section.html"><a href="section.html#传入一个lambda值看看"><i class="fa fa-check"></i><b>5.0.1</b> 传入一个lambda值看看</a></li>
+<li class="chapter" data-level="5.1" data-path="section.html"><a href="section.html#cv交叉验证"><i class="fa fa-check"></i><b>5.1</b> cv交叉验证</a></li>
+<li class="chapter" data-level="5.2" data-path="section.html"><a href="section.html#lasso在测试集上的表现"><i class="fa fa-check"></i><b>5.2</b> lasso在测试集上的表现</a></li>
+<li class="chapter" data-level="5.3" data-path="section.html"><a href="section.html#建立模型并绘制列线图"><i class="fa fa-check"></i><b>5.3</b> 建立模型并绘制列线图</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="section.html"><a href="section.html#建立一个模型吧"><i class="fa fa-check"></i><b>5.3.1</b> 建立一个模型吧</a></li>
+<li class="chapter" data-level="5.3.2" data-path="section.html"><a href="section.html#列线图1"><i class="fa fa-check"></i><b>5.3.2</b> 列线图1</a></li>
+<li class="chapter" data-level="5.3.3" data-path="section.html"><a href="section.html#c统计量"><i class="fa fa-check"></i><b>5.3.3</b> C统计量</a></li>
+<li class="chapter" data-level="5.3.4" data-path="section.html"><a href="section.html#校正曲线"><i class="fa fa-check"></i><b>5.3.4</b> 校正曲线</a></li>
+<li class="chapter" data-level="5.3.5" data-path="section.html"><a href="section.html#ps同时绘制多条"><i class="fa fa-check"></i><b>5.3.5</b> ps：同时绘制多条</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="section.html"><a href="section.html#共线性讨论"><i class="fa fa-check"></i><b>5.4</b> 共线性讨论</a></li>
+</ul></li>
+<li class="appendix"><span><b>附录</b></span></li>
+<li class="chapter" data-level="A" data-path="sound.html"><a href="sound.html"><i class="fa fa-check"></i><b>A</b> 余音绕梁</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>参考文献</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">本书由 bookdown 强力驱动</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">近视预测模型开发与验证</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="变量筛选" class="section level1" number="3">
+<h1><span class="header-section-number">第 3 章</span> 变量筛选</h1>
+<div id="先单后多" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 先单后多</h2>
+<div id="分类变量处理" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> 分类变量处理</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="变量筛选.html#cb20-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&#39;myopia.csv&#39;</span>)</span>
+<span id="cb20-2"><a href="变量筛选.html#cb20-2" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>MYOPIC <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>MYOPIC,<span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;非近视&quot;</span>,<span class="st">&quot;近视&quot;</span>))</span>
+<span id="cb20-3"><a href="变量筛选.html#cb20-3" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>GENDER <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>GENDER,<span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;女性&quot;</span>,<span class="st">&quot;男性&quot;</span>))</span>
+<span id="cb20-4"><a href="变量筛选.html#cb20-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>MOMMY <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>MOMMY,<span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;母亲不近视&quot;</span>,<span class="st">&quot;母亲近视&quot;</span>))</span>
+<span id="cb20-5"><a href="变量筛选.html#cb20-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>DADMY <span class="ot">&lt;-</span> <span class="fu">factor</span>(data<span class="sc">$</span>DADMY,<span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;父亲不近视&quot;</span>,<span class="st">&quot;父亲近视&quot;</span>))</span>
+<span id="cb20-6"><a href="变量筛选.html#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#年龄不设标签</span></span>
+<span id="cb20-7"><a href="变量筛选.html#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># str(data)</span></span>
+<span id="cb20-8"><a href="变量筛选.html#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(data)</span></span></code></pre></div>
+</div>
+<div id="制作table1" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> 制作table1</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="变量筛选.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#连续性自变量</span></span>
+<span id="cb21-2"><a href="变量筛选.html#cb21-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;SPHEQ&quot;</span>,<span class="st">&quot;AL&quot;</span>,<span class="st">&quot;ACD&quot;</span>,<span class="st">&quot;LT&quot;</span>,<span class="st">&quot;VCD&quot;</span>,<span class="st">&quot;SPORTHR&quot;</span>,<span class="st">&quot;READHR&quot;</span>,<span class="st">&quot;COMPHR&quot;</span>,<span class="st">&quot;STUDYHR&quot;</span>,<span class="st">&quot;TVHR&quot;</span>,<span class="st">&quot;DIOPTERHR&quot;</span>)</span>
+<span id="cb21-3"><a href="变量筛选.html#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#分类变量</span></span>
+<span id="cb21-4"><a href="变量筛选.html#cb21-4" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;MYOPIC&quot;</span>,<span class="st">&quot;AGE&quot;</span>,<span class="st">&quot;GENDER&quot;</span>,<span class="st">&quot;MOMMY&quot;</span>,<span class="st">&quot;DADMY&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="变量筛选.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tableone)</span></code></pre></div>
+<pre><code>## Warning: 程辑包&#39;tableone&#39;是用R版本4.1.2 来建造的</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="变量筛选.html#cb24-1" aria-hidden="true" tabindex="-1"></a>table1 <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> <span class="fu">c</span>(x1,x2),</span>
+<span id="cb24-2"><a href="变量筛选.html#cb24-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> data,</span>
+<span id="cb24-3"><a href="变量筛选.html#cb24-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">factorVars =</span> x2,</span>
+<span id="cb24-4"><a href="变量筛选.html#cb24-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">strata=</span><span class="fu">c</span>(<span class="st">&quot;MYOPIC&quot;</span>),<span class="at">addOverall =</span> F)</span></code></pre></div>
+<pre><code>## Warning: replacing previous import &#39;lifecycle::last_warnings&#39; by
+## &#39;rlang::last_warnings&#39; when loading &#39;pillar&#39;</code></pre>
+<pre><code>## Warning: replacing previous import &#39;lifecycle::last_warnings&#39; by
+## &#39;rlang::last_warnings&#39; when loading &#39;hms&#39;</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="变量筛选.html#cb27-1" aria-hidden="true" tabindex="-1"></a>results1 <span class="ot">&lt;-</span> <span class="fu">print</span>(table1,<span class="at">shouwAllLevels=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>##                        Stratified by MYOPIC
+##                         非近视        近视           p      test
+##   n                       537            81                     
+##   SPHEQ (mean (SD))      0.89 (0.60)   0.20 (0.40)   &lt;0.001     
+##   AL (mean (SD))        22.49 (0.69)  22.56 (0.61)    0.349     
+##   ACD (mean (SD))        3.57 (0.23)   3.64 (0.20)    0.007     
+##   LT (mean (SD))         3.54 (0.16)   3.52 (0.14)    0.257     
+##   VCD (mean (SD))       15.37 (0.67)  15.40 (0.61)    0.769     
+##   SPORTHR (mean (SD))   12.26 (7.93)   9.94 (8.00)    0.015     
+##   READHR (mean (SD))     2.71 (2.97)   3.37 (3.62)    0.071     
+##   COMPHR (mean (SD))     2.07 (2.99)   2.31 (3.50)    0.521     
+##   STUDYHR (mean (SD))    1.52 (2.29)   1.31 (1.68)    0.429     
+##   TVHR (mean (SD))       8.96 (5.79)   8.89 (5.26)    0.920     
+##   DIOPTERHR (mean (SD)) 25.79 (15.92) 27.54 (16.75)   0.359     
+##   MYOPIC = 近视 (%)         0 ( 0.0)     81 (100.0)  &lt;0.001     
+##   AGE (%)                                             0.497     
+##      5                     17 ( 3.2)      4 (  4.9)             
+##      6                    398 (74.1)     58 ( 71.6)             
+##      7                     73 (13.6)      9 ( 11.1)             
+##      8                     45 ( 8.4)      8 (  9.9)             
+##      9                      4 ( 0.7)      2 (  2.5)             
+##   GENDER = 男性 (%)       256 (47.7)     46 ( 56.8)   0.158     
+##   MOMMY = 母亲近视 (%)    258 (48.0)     55 ( 67.9)   0.001     
+##   DADMY = 父亲近视 (%)    252 (46.9)     56 ( 69.1)  &lt;0.001</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="变量筛选.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results1,<span class="st">&quot;table1.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="变量筛选.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#如果不服从正态分布秩和检验、卡方检验</span></span>
+<span id="cb30-2"><a href="变量筛选.html#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tableone)</span>
+<span id="cb30-3"><a href="变量筛选.html#cb30-3" aria-hidden="true" tabindex="-1"></a>table1 <span class="ot">&lt;-</span> <span class="fu">CreateTableOne</span>(<span class="at">vars =</span> <span class="fu">c</span>(x1,x2),</span>
+<span id="cb30-4"><a href="变量筛选.html#cb30-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> data,</span>
+<span id="cb30-5"><a href="变量筛选.html#cb30-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">factorVars =</span> x2,</span>
+<span id="cb30-6"><a href="变量筛选.html#cb30-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">strata =</span> <span class="st">&quot;MYOPIC&quot;</span>,<span class="at">addOverall =</span> F)</span>
+<span id="cb30-7"><a href="变量筛选.html#cb30-7" aria-hidden="true" tabindex="-1"></a>results2 <span class="ot">&lt;-</span> <span class="fu">print</span>(table1,<span class="at">shouwAllLevels=</span><span class="cn">FALSE</span>,</span>
+<span id="cb30-8"><a href="变量筛选.html#cb30-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">nonnormal=</span>x1)<span class="co">#指定非阐述检验的变量</span></span></code></pre></div>
+<pre><code>##                           Stratified by MYOPIC
+##                            非近视               近视                 p     
+##   n                          537                   81                      
+##   SPHEQ (median [IQR])      0.79 [0.55, 1.10]    0.23 [-0.07, 0.50]  &lt;0.001
+##   AL (median [IQR])        22.45 [22.02, 22.97] 22.56 [22.07, 22.94]  0.360
+##   ACD (median [IQR])        3.57 [3.41, 3.72]    3.68 [3.50, 3.74]    0.003
+##   LT (median [IQR])         3.54 [3.44, 3.65]    3.51 [3.42, 3.63]    0.206
+##   VCD (median [IQR])       15.36 [14.92, 15.83] 15.33 [14.96, 15.89]  0.741
+##   SPORTHR (median [IQR])   10.00 [6.00, 16.00]   8.00 [3.00, 15.00]   0.005
+##   READHR (median [IQR])     2.00 [0.00, 4.00]    3.00 [1.00, 5.00]    0.102
+##   COMPHR (median [IQR])     1.00 [0.00, 3.00]    1.00 [0.00, 3.00]    0.892
+##   STUDYHR (median [IQR])    1.00 [0.00, 2.00]    1.00 [0.00, 2.00]    0.967
+##   TVHR (median [IQR])       8.00 [4.00, 12.00]   8.00 [5.00, 12.00]   0.820
+##   DIOPTERHR (median [IQR]) 22.00 [14.00, 34.00] 24.00 [16.00, 36.00]  0.317
+##   MYOPIC = 近视 (%)            0 ( 0.0)            81 (100.0)        &lt;0.001
+##   AGE (%)                                                             0.497
+##      5                        17 ( 3.2)             4 (  4.9)              
+##      6                       398 (74.1)            58 ( 71.6)              
+##      7                        73 (13.6)             9 ( 11.1)              
+##      8                        45 ( 8.4)             8 (  9.9)              
+##      9                         4 ( 0.7)             2 (  2.5)              
+##   GENDER = 男性 (%)          256 (47.7)            46 ( 56.8)         0.158
+##   MOMMY = 母亲近视 (%)       258 (48.0)            55 ( 67.9)         0.001
+##   DADMY = 父亲近视 (%)       252 (46.9)            56 ( 69.1)        &lt;0.001
+##                           Stratified by MYOPIC
+##                            test   
+##   n                               
+##   SPHEQ (median [IQR])     nonnorm
+##   AL (median [IQR])        nonnorm
+##   ACD (median [IQR])       nonnorm
+##   LT (median [IQR])        nonnorm
+##   VCD (median [IQR])       nonnorm
+##   SPORTHR (median [IQR])   nonnorm
+##   READHR (median [IQR])    nonnorm
+##   COMPHR (median [IQR])    nonnorm
+##   STUDYHR (median [IQR])   nonnorm
+##   TVHR (median [IQR])      nonnorm
+##   DIOPTERHR (median [IQR]) nonnorm
+##   MYOPIC = 近视 (%)               
+##   AGE (%)                         
+##      5                            
+##      6                            
+##      7                            
+##      8                            
+##      9                            
+##   GENDER = 男性 (%)               
+##   MOMMY = 母亲近视 (%)            
+##   DADMY = 父亲近视 (%)</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="变量筛选.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#exact 可以指定确切概论检验的变量，这里忽略（数据大，不需要）</span></span>
+<span id="cb32-2"><a href="变量筛选.html#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results2,<span class="st">&quot;results2.csv&quot;</span>)</span></code></pre></div>
+</div>
+<div id="单因素logistic" class="section level3" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> 单因素logistic</h3>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="变量筛选.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 自变量</span></span>
+<span id="cb33-2"><a href="变量筛选.html#cb33-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(MYOPIC <span class="sc">~</span> SPHEQ,<span class="at">data =</span> data,<span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb33-3"><a href="变量筛选.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看模型结果</span></span>
+<span id="cb33-4"><a href="变量筛选.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)<span class="sc">$</span>coefficients</span></code></pre></div>
+<pre><code>##                Estimate Std. Error    z value     Pr(&gt;|z|)
+## (Intercept)  0.05397315  0.2067483  0.2610573 7.940483e-01
+## SPHEQ       -3.83309762  0.4183696 -9.1619878 5.094998e-20</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="变量筛选.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算OR及其可信区间</span></span>
+<span id="cb35-2"><a href="变量筛选.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="st">&quot;OR&quot;</span><span class="ot">=</span><span class="fu">coef</span>(model),<span class="fu">confint</span>(model)))</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre><code>##                     OR      2.5 %     97.5 %
+## (Intercept) 1.05545626 0.70776986 1.59472261
+## SPHEQ       0.02164247 0.00910867 0.04716271</code></pre>
+<p>取单因素P&lt;0.1</p>
+</div>
+<div id="多因素模型" class="section level3" number="3.1.4">
+<h3><span class="header-section-number">3.1.4</span> 多因素模型</h3>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="变量筛选.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 多因素模型</span></span>
+<span id="cb38-2"><a href="变量筛选.html#cb38-2" aria-hidden="true" tabindex="-1"></a>model_1<span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">factor</span>(MYOPIC)<span class="sc">~</span>MOMMY<span class="sc">+</span>DADMY<span class="sc">+</span>SPHEQ<span class="sc">+</span>ACD<span class="sc">+</span>SPORTHR<span class="sc">+</span>READHR,<span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,<span class="at">data =</span> data)</span>
+<span id="cb38-3"><a href="变量筛选.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看结果</span></span>
+<span id="cb38-4"><a href="变量筛选.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_1)<span class="sc">$</span>coefficients</span></code></pre></div>
+<pre><code>##                  Estimate Std. Error   z value     Pr(&gt;|z|)
+## (Intercept)   -3.53288934 2.42831871 -1.454871 1.457051e-01
+## MOMMY母亲近视  0.74791347 0.31126257  2.402838 1.626840e-02
+## DADMY父亲近视  0.86552437 0.30735580  2.816034 4.862053e-03
+## SPHEQ         -3.79733834 0.43556193 -8.718251 2.825317e-18
+## ACD            0.82711271 0.66485466  1.244050 2.134810e-01
+## SPORTHR       -0.05461693 0.02041790 -2.674953 7.473971e-03
+## READHR         0.06843900 0.04577874  1.494995 1.349157e-01</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="变量筛选.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算OR及其可信区间</span></span>
+<span id="cb40-2"><a href="变量筛选.html#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="st">&quot;OR&quot;</span><span class="ot">=</span><span class="fu">coef</span>(model),<span class="fu">confint</span>(model_1)))</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre><code>## Warning in cbind(OR = coef(model), confint(model_1)): number of rows of result
+## is not a multiple of vector length (arg 1)</code></pre>
+<pre><code>##                       OR        2.5 %     97.5 %
+## (Intercept)   1.05545626 0.0002380046 3.33425391
+## MOMMY母亲近视 0.02164247 1.1604118328 3.95048116
+## DADMY父亲近视 1.05545626 1.3157000566 4.41021361
+## SPHEQ         0.02164247 0.0090945183 0.05041805
+## ACD           1.05545626 0.6237053229 8.51268747
+## SPORTHR       0.02164247 0.9077904406 0.98385439
+## READHR        1.05545626 0.9784535086 1.17140573</code></pre>
+<div id="ps-引入变量" class="section level4" number="3.1.4.1">
+<h4><span class="header-section-number">3.1.4.1</span> PS: 引入变量</h4>
+<p>如果我们已经确定是研究自变量X 与 因变量Y之间的关系，这时候协变量应该如何筛选进入多因素模型呢？
+如果某个协变量Z与因变量Y之间单因素分析的P值小于0.1，并且协变量Z与自变量X同时分析与因变量Y的关系，由于Z的存在，使X的系数较单因素分析时变化超过10%，这时候协变量Z应该纳入多因素分析中。</p>
+<p>我们这里主要（关心）的X 变量时SPHEQ情况，其他自变量都是协变量Z</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="变量筛选.html#cb44-1" aria-hidden="true" tabindex="-1"></a>uni_methods<span class="ot">&lt;-</span><span class="cf">function</span>(xvar){</span>
+<span id="cb44-2"><a href="变量筛选.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">&lt;-</span><span class="fu">glm</span>(MYOPIC<span class="sc">~</span>SPHEQ,<span class="at">data =</span> data,<span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb44-3"><a href="变量筛选.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  coef <span class="ot">&lt;-</span> <span class="fu">coef</span>(model)[<span class="dv">2</span>]</span>
+<span id="cb44-4"><a href="变量筛选.html#cb44-4" aria-hidden="true" tabindex="-1"></a>  form <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste0</span>(<span class="st">&quot;MYOPIC~SPHEQ+&quot;</span>,xvar))</span>
+<span id="cb44-5"><a href="变量筛选.html#cb44-5" aria-hidden="true" tabindex="-1"></a>  model2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(form,<span class="at">data =</span> data,<span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb44-6"><a href="变量筛选.html#cb44-6" aria-hidden="true" tabindex="-1"></a>  coef2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(model2)[<span class="dv">2</span>]</span>
+<span id="cb44-7"><a href="变量筛选.html#cb44-7" aria-hidden="true" tabindex="-1"></a>  ratio <span class="ot">&lt;-</span> <span class="fu">abs</span>(coef2<span class="sc">-</span>coef)<span class="sc">/</span>coef<span class="sc">&gt;</span><span class="fl">0.1</span></span>
+<span id="cb44-8"><a href="变量筛选.html#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(ratio){</span>
+<span id="cb44-9"><a href="变量筛选.html#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(xvar)</span>
+<span id="cb44-10"><a href="变量筛选.html#cb44-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb44-11"><a href="变量筛选.html#cb44-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="变量筛选.html#cb45-1" aria-hidden="true" tabindex="-1"></a>xvar <span class="ot">&lt;-</span> <span class="fu">c</span>(x1,x2)</span>
+<span id="cb45-2"><a href="变量筛选.html#cb45-2" aria-hidden="true" tabindex="-1"></a>xvar <span class="ot">&lt;-</span> xvar[<span class="sc">-</span><span class="fu">which</span>(xvar<span class="sc">==</span><span class="st">&quot;SPHEQ&quot;</span>)]</span>
+<span id="cb45-3"><a href="变量筛选.html#cb45-3" aria-hidden="true" tabindex="-1"></a>xvar</span></code></pre></div>
+<pre><code>##  [1] &quot;AL&quot;        &quot;ACD&quot;       &quot;LT&quot;        &quot;VCD&quot;       &quot;SPORTHR&quot;   &quot;READHR&quot;   
+##  [7] &quot;COMPHR&quot;    &quot;STUDYHR&quot;   &quot;TVHR&quot;      &quot;DIOPTERHR&quot; &quot;MYOPIC&quot;    &quot;AGE&quot;      
+## [13] &quot;GENDER&quot;    &quot;MOMMY&quot;     &quot;DADMY&quot;</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="变量筛选.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(xvar,uni_methods)</span></code></pre></div>
+<pre><code>## Warning in model.matrix.default(mt, mf, contrasts): 在公式右手的反应略过不用</code></pre>
+<pre><code>## Warning in model.matrix.default(mt, mf, contrasts): 模型矩阵的2项有问题: 没有指
+## 定的列</code></pre>
+<pre><code>## [[1]]
+## NULL
+## 
+## [[2]]
+## NULL
+## 
+## [[3]]
+## NULL
+## 
+## [[4]]
+## NULL
+## 
+## [[5]]
+## NULL
+## 
+## [[6]]
+## NULL
+## 
+## [[7]]
+## NULL
+## 
+## [[8]]
+## NULL
+## 
+## [[9]]
+## NULL
+## 
+## [[10]]
+## NULL
+## 
+## [[11]]
+## NULL
+## 
+## [[12]]
+## NULL
+## 
+## [[13]]
+## NULL
+## 
+## [[14]]
+## NULL
+## 
+## [[15]]
+## NULL</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="数据.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lasso-logistic.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/yihui/bookdown-chinese/edit/master/03-var.Rmd",
+"text": "编辑"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown.pdf", "bookdown.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
