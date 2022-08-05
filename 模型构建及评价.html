@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>第 7 章 模型构建及评价 | 近视预测模型开发与验证</title>
+  <meta name="description" content="预测模型学习" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="第 7 章 模型构建及评价 | 近视预测模型开发与验证" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="预测模型学习" />
+  <meta name="github-repo" content="yihui/bookdown-chinese" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 7 章 模型构建及评价 | 近视预测模型开发与验证" />
+  
+  <meta name="twitter:description" content="预测模型学习" />
+  
+
+<meta name="author" content="张献伟" />
+
+
+<meta name="date" content="2022-07-25" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="随机森林-变量重要性评分.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">近视预测模型开发</a></li>
+
+<li class="divider"></li>
+<li><a href="index.html#前言">前言<span></span></a>
+<ul>
+<li><a href="index.html#致谢">致谢<span></span></a></li>
+</ul></li>
+<li><a href="author.html#author">作者简介<span></span></a></li>
+<li class="chapter" data-level="1" data-path="临床预测模型.html"><a href="临床预测模型.html"><i class="fa fa-check"></i><b>1</b> 临床预测模型<span></span></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="临床预测模型.html"><a href="临床预测模型.html#模型构建"><i class="fa fa-check"></i><b>1.1</b> 模型构建<span></span></a></li>
+<li class="chapter" data-level="1.2" data-path="临床预测模型.html"><a href="临床预测模型.html#模型评价"><i class="fa fa-check"></i><b>1.2</b> 模型评价<span></span></a></li>
+<li class="chapter" data-level="1.3" data-path="临床预测模型.html"><a href="临床预测模型.html#模型验证"><i class="fa fa-check"></i><b>1.3</b> 模型验证<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="数据.html"><a href="数据.html"><i class="fa fa-check"></i><b>2</b> 数据<span></span></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="数据.html"><a href="数据.html#数据集简介"><i class="fa fa-check"></i><b>2.1</b> 数据集简介<span></span></a></li>
+<li class="chapter" data-level="2.2" data-path="数据.html"><a href="数据.html#用spheq预测近视"><i class="fa fa-check"></i><b>2.2</b> 用SPHEQ预测近视<span></span></a></li>
+<li class="chapter" data-level="2.3" data-path="数据.html"><a href="数据.html#绘制所有变量之间的相关性"><i class="fa fa-check"></i><b>2.3</b> 绘制所有变量之间的相关性<span></span></a></li>
+<li class="chapter" data-level="2.4" data-path="数据.html"><a href="数据.html#变量与近视之间的相关性"><i class="fa fa-check"></i><b>2.4</b> 变量与近视之间的相关性<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="变量筛选.html"><a href="变量筛选.html"><i class="fa fa-check"></i><b>3</b> 变量筛选<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="变量筛选.html"><a href="变量筛选.html#先单后多"><i class="fa fa-check"></i><b>3.1</b> 先单后多<span></span></a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="变量筛选.html"><a href="变量筛选.html#分类变量处理"><i class="fa fa-check"></i><b>3.1.1</b> 分类变量处理<span></span></a></li>
+<li class="chapter" data-level="3.1.2" data-path="变量筛选.html"><a href="变量筛选.html#制作table1"><i class="fa fa-check"></i><b>3.1.2</b> 制作table1<span></span></a></li>
+<li class="chapter" data-level="3.1.3" data-path="变量筛选.html"><a href="变量筛选.html#单因素logistic"><i class="fa fa-check"></i><b>3.1.3</b> 单因素logistic<span></span></a></li>
+<li class="chapter" data-level="3.1.4" data-path="变量筛选.html"><a href="变量筛选.html#多因素模型"><i class="fa fa-check"></i><b>3.1.4</b> 多因素模型<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="lasso-logistic.html"><a href="lasso-logistic.html"><i class="fa fa-check"></i><b>4</b> LASSO-Logistic<span></span></a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="lasso-logistic.html"><a href="lasso-logistic.html#读入数据"><i class="fa fa-check"></i><b>4.1</b> 读入数据<span></span></a></li>
+<li class="chapter" data-level="4.2" data-path="lasso-logistic.html"><a href="lasso-logistic.html#将数据集分成训练集和测试集"><i class="fa fa-check"></i><b>4.2</b> 将数据集分成训练集和测试集<span></span></a></li>
+<li class="chapter" data-level="4.3" data-path="lasso-logistic.html"><a href="lasso-logistic.html#加载包"><i class="fa fa-check"></i><b>4.3</b> 加载包<span></span></a></li>
+<li class="chapter" data-level="4.4" data-path="lasso-logistic.html"><a href="lasso-logistic.html#定义自变量因变量"><i class="fa fa-check"></i><b>4.4</b> 定义自变量，因变量<span></span></a></li>
+<li class="chapter" data-level="4.5" data-path="lasso-logistic.html"><a href="lasso-logistic.html#lasso"><i class="fa fa-check"></i><b>4.5</b> lasso<span></span></a></li>
+<li class="chapter" data-level="4.6" data-path="lasso-logistic.html"><a href="lasso-logistic.html#cv交叉验证"><i class="fa fa-check"></i><b>4.6</b> cv交叉验证<span></span></a></li>
+<li class="chapter" data-level="4.7" data-path="lasso-logistic.html"><a href="lasso-logistic.html#lasso在测试集上的表现"><i class="fa fa-check"></i><b>4.7</b> lasso在测试集上的表现<span></span></a></li>
+<li class="chapter" data-level="4.8" data-path="lasso-logistic.html"><a href="lasso-logistic.html#建立模型并绘制列线图"><i class="fa fa-check"></i><b>4.8</b> 建立模型并绘制列线图<span></span></a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="lasso-logistic.html"><a href="lasso-logistic.html#建立一个模型吧"><i class="fa fa-check"></i><b>4.8.1</b> 建立一个模型吧<span></span></a></li>
+<li class="chapter" data-level="4.8.2" data-path="lasso-logistic.html"><a href="lasso-logistic.html#列线图1"><i class="fa fa-check"></i><b>4.8.2</b> 列线图1<span></span></a></li>
+<li class="chapter" data-level="4.8.3" data-path="lasso-logistic.html"><a href="lasso-logistic.html#列线图2"><i class="fa fa-check"></i><b>4.8.3</b> 列线图2<span></span></a></li>
+<li class="chapter" data-level="4.8.4" data-path="lasso-logistic.html"><a href="lasso-logistic.html#c统计量"><i class="fa fa-check"></i><b>4.8.4</b> C统计量<span></span></a></li>
+<li class="chapter" data-level="4.8.5" data-path="lasso-logistic.html"><a href="lasso-logistic.html#校正曲线"><i class="fa fa-check"></i><b>4.8.5</b> 校正曲线<span></span></a></li>
+<li class="chapter" data-level="4.8.6" data-path="lasso-logistic.html"><a href="lasso-logistic.html#ps同时绘制多条"><i class="fa fa-check"></i><b>4.8.6</b> ps：同时绘制多条<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="lasso-logistic.html"><a href="lasso-logistic.html#共线性讨论"><i class="fa fa-check"></i><b>4.9</b> 共线性讨论<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="逐步回归.html"><a href="逐步回归.html"><i class="fa fa-check"></i><b>5</b> 逐步回归<span></span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="逐步回归.html"><a href="逐步回归.html#数据-1"><i class="fa fa-check"></i><b>5.1</b> 数据<span></span></a></li>
+<li class="chapter" data-level="5.2" data-path="逐步回归.html"><a href="逐步回归.html#逐步回归-1"><i class="fa fa-check"></i><b>5.2</b> 逐步回归<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html"><i class="fa fa-check"></i><b>6</b> 随机森林-变量重要性评分<span></span></a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html#导入数据"><i class="fa fa-check"></i><b>6.1</b> 导入数据<span></span></a></li>
+<li class="chapter" data-level="6.2" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html#拟合随机森林模型"><i class="fa fa-check"></i><b>6.2</b> 拟合随机森林模型<span></span></a></li>
+<li class="chapter" data-level="6.3" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html#画出误差和树数量的关系图"><i class="fa fa-check"></i><b>6.3</b> 画出误差和树数量的关系图<span></span></a></li>
+<li class="chapter" data-level="6.4" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html#找出总样本最小误差所对应的树的数量"><i class="fa fa-check"></i><b>6.4</b> 找出总样本最小误差所对应的树的数量<span></span></a></li>
+<li class="chapter" data-level="6.5" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html#变量重要性评分"><i class="fa fa-check"></i><b>6.5</b> 变量重要性评分<span></span></a></li>
+<li class="chapter" data-level="6.6" data-path="随机森林-变量重要性评分.html"><a href="随机森林-变量重要性评分.html#可视化"><i class="fa fa-check"></i><b>6.6</b> 可视化<span></span></a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="模型构建及评价.html"><a href="模型构建及评价.html"><i class="fa fa-check"></i><b>7</b> 模型构建及评价<span></span></a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="模型构建及评价.html"><a href="模型构建及评价.html#建立模型并绘制列线图-1"><i class="fa fa-check"></i><b>7.1</b> 建立模型并绘制列线图<span></span></a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="模型构建及评价.html"><a href="模型构建及评价.html#建立一个模型"><i class="fa fa-check"></i><b>7.1.1</b> 建立一个模型<span></span></a></li>
+<li class="chapter" data-level="7.1.2" data-path="模型构建及评价.html"><a href="模型构建及评价.html#列线图1-1"><i class="fa fa-check"></i><b>7.1.2</b> 列线图1<span></span></a></li>
+<li class="chapter" data-level="7.1.3" data-path="模型构建及评价.html"><a href="模型构建及评价.html#c统计量-1"><i class="fa fa-check"></i><b>7.1.3</b> C统计量<span></span></a></li>
+<li class="chapter" data-level="7.1.4" data-path="模型构建及评价.html"><a href="模型构建及评价.html#brier评分"><i class="fa fa-check"></i><b>7.1.4</b> Brier评分<span></span></a></li>
+<li class="chapter" data-level="7.1.5" data-path="模型构建及评价.html"><a href="模型构建及评价.html#校正曲线-1"><i class="fa fa-check"></i><b>7.1.5</b> 校正曲线<span></span></a></li>
+<li class="chapter" data-level="7.1.6" data-path="模型构建及评价.html"><a href="模型构建及评价.html#ps同时绘制多条-1"><i class="fa fa-check"></i><b>7.1.6</b> ps：同时绘制多条<span></span></a></li>
+</ul></li>
+</ul></li>
+<li class="appendix"><span><b>附录<span></span></b></span></li>
+<li><a href="references.html#references">参考文献<span></span></a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">本书由 bookdown 强力驱动</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">近视预测模型开发与验证</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="模型构建及评价" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">第 7 章</span> 模型构建及评价<a href="模型构建及评价.html#模型构建及评价" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="建立模型并绘制列线图-1" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> 建立模型并绘制列线图<a href="模型构建及评价.html#建立模型并绘制列线图-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="建立一个模型" class="section level3 hasAnchor" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> 建立一个模型<a href="模型构建及评价.html#建立一个模型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="模型构建及评价.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="模型构建及评价.html#cb1-2" aria-hidden="true" tabindex="-1"></a>myopia <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;myopia.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-3"><a href="模型构建及评价.html#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PARENTS=</span>MOMMY<span class="sc">+</span>DADMY) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-4"><a href="模型构建及评价.html#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ID<span class="sc">:</span>DIOPTERHR,PARENTS)</span>
+<span id="cb1-5"><a href="模型构建及评价.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rms)</span>
+<span id="cb1-6"><a href="模型构建及评价.html#cb1-6" aria-hidden="true" tabindex="-1"></a>dd <span class="ot">&lt;-</span> <span class="fu">datadist</span>(myopia)</span>
+<span id="cb1-7"><a href="模型构建及评价.html#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist=</span>dd)</span>
+<span id="cb1-8"><a href="模型构建及评价.html#cb1-8" aria-hidden="true" tabindex="-1"></a>model<span class="ot">&lt;-</span> <span class="fu">lrm</span>(MYOPIC<span class="sc">~</span>SPHEQ<span class="sc">+</span>PARENTS<span class="sc">+</span>GENDER<span class="sc">+</span>ACD<span class="sc">+</span>SPORTHR<span class="sc">+</span>READHR,<span class="at">data=</span>myopia,<span class="at">x=</span><span class="cn">TRUE</span>,<span class="at">y=</span><span class="cn">TRUE</span>)<span class="co">#作为模型进行下面的操作</span></span></code></pre></div>
+</div>
+<div id="列线图1-1" class="section level3 hasAnchor" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> 列线图1<a href="模型构建及评价.html#列线图1-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="模型构建及评价.html#cb2-1" aria-hidden="true" tabindex="-1"></a>nom1 <span class="ot">&lt;-</span> <span class="fu">nomogram</span>(model,<span class="at">fun =</span> plogis,<span class="at">fun.at=</span><span class="fu">c</span>(<span class="fl">0.001</span>,<span class="fl">0.01</span>,<span class="fl">0.05</span>,<span class="fl">0.1</span>,<span class="fu">seq</span>(<span class="fl">0.2</span>,<span class="fl">0.8</span>,<span class="at">by=</span><span class="fl">0.2</span>),<span class="fl">0.95</span>,<span class="fl">1.0</span>),<span class="at">lp=</span><span class="cn">FALSE</span>,<span class="at">funlabel =</span> <span class="st">&#39;myopia&#39;</span>)</span>
+<span id="cb2-2"><a href="模型构建及评价.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nom1)</span></code></pre></div>
+<p><img src="07-Evaluation_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+### 列线图2</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="模型构建及评价.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # install.packages(&quot;DynNom&quot;)</span></span>
+<span id="cb3-2"><a href="模型构建及评价.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># library(DynNom)</span></span>
+<span id="cb3-3"><a href="模型构建及评价.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># model_dynnom &lt;- glm(MYOPIC~SPHEQ+PARENTS+GENDER+ACD+SPORTHR+READHR,data=myopia,family = binomial())</span></span>
+<span id="cb3-4"><a href="模型构建及评价.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># DynNom(model_dynnom,DNtitle = &quot;Nomogram&quot;,DNxlab = &quot;Probability&quot;)</span></span></code></pre></div>
+</div>
+<div id="c统计量-1" class="section level3 hasAnchor" number="7.1.3">
+<h3><span class="header-section-number">7.1.3</span> C统计量<a href="模型构建及评价.html#c统计量-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="模型构建及评价.html#cb4-1" aria-hidden="true" tabindex="-1"></a>myopia<span class="sc">$</span>predvalue <span class="ot">&lt;-</span> <span class="fu">predict</span>(model)</span>
+<span id="cb4-2"><a href="模型构建及评价.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.package(&#39;ROCR&#39;)</span></span>
+<span id="cb4-3"><a href="模型构建及评价.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ROCR)</span></code></pre></div>
+<pre><code>## Warning: 程辑包&#39;ROCR&#39;是用R版本4.1.3 来建造的</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="模型构建及评价.html#cb6-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">prediction</span>(myopia<span class="sc">$</span>predvalue,myopia<span class="sc">$</span>MYOPIC)</span>
+<span id="cb6-2"><a href="模型构建及评价.html#cb6-2" aria-hidden="true" tabindex="-1"></a>perf <span class="ot">&lt;-</span> <span class="fu">performance</span>(pred,<span class="st">&quot;tpr&quot;</span>,<span class="st">&quot;fpr&quot;</span>)</span>
+<span id="cb6-3"><a href="模型构建及评价.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(perf)</span>
+<span id="cb6-4"><a href="模型构建及评价.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code></pre></div>
+<p><img src="07-Evaluation_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="模型构建及评价.html#cb7-1" aria-hidden="true" tabindex="-1"></a>auc <span class="ot">&lt;-</span> <span class="fu">performance</span>(pred,<span class="st">&quot;auc&quot;</span>)</span>
+<span id="cb7-2"><a href="模型构建及评价.html#cb7-2" aria-hidden="true" tabindex="-1"></a>auc<span class="sc">@</span>y.values</span></code></pre></div>
+<pre><code>## [[1]]
+## [1] 0.8914178</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="模型构建及评价.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model_glm &lt;- glm(MYOPIC~SPHEQ+PARENTS+GENDER+ACD+SPORTHR+READHR,data = myopia,family = binomial())</span></span>
+<span id="cb9-2"><a href="模型构建及评价.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># myopia$predvalue &lt;- predict(model_glm)</span></span>
+<span id="cb9-3"><a href="模型构建及评价.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # install.package(&#39;ROCR&#39;)</span></span>
+<span id="cb9-4"><a href="模型构建及评价.html#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(ROCR)</span></span>
+<span id="cb9-5"><a href="模型构建及评价.html#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># pred &lt;- prediction(myopia$predvalue,myopia$MYOPIC)</span></span>
+<span id="cb9-6"><a href="模型构建及评价.html#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># perf &lt;- performance(pred,&quot;tpr&quot;,&quot;fpr&quot;)</span></span>
+<span id="cb9-7"><a href="模型构建及评价.html#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(perf)</span></span>
+<span id="cb9-8"><a href="模型构建及评价.html#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># abline(0,1)</span></span>
+<span id="cb9-9"><a href="模型构建及评价.html#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># auc &lt;- performance(pred,&quot;auc&quot;)</span></span>
+<span id="cb9-10"><a href="模型构建及评价.html#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># auc@y.values</span></span></code></pre></div>
+</div>
+<div id="brier评分" class="section level3 hasAnchor" number="7.1.4">
+<h3><span class="header-section-number">7.1.4</span> Brier评分<a href="模型构建及评价.html#brier评分" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>Brief分数，是衡量概率校准的一个参数。</p></li>
+<li><p>简单来说，可以被认为是对一组概率预测的”校准”的量度，或者称为”成本函数”，这一组概率对应的情况必须互斥，并且概率之和必须为1.</p></li>
+<li><p>Brier score 计算公式如下（仅针对二分类资料） <span class="math inline">\(Loss=\frac{1}{N} \sum_{i=1}^{N} (y{i} -p{i})^2\)</span></p></li>
+<li><p>其中yi为样本的真是标签，取值为0或1；pi为模型预测为正的概率。N是预测事件数量。</p></li>
+<li><p>式子直接计算了真实标签和预测概率的均方误差，Brier score越小则校准效果越好。</p></li>
+</ul>
+<p>利用lrm函数构建：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="模型构建及评价.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #计算logit P ,俗称的线性预测值</span></span>
+<span id="cb10-2"><a href="模型构建及评价.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pred.logit1 &lt;- predict(model)</span></span>
+<span id="cb10-3"><a href="模型构建及评价.html#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># #计算预测概率</span></span>
+<span id="cb10-4"><a href="模型构建及评价.html#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># P1 &lt;- 1/(1+exp(-pred.logit1))</span></span>
+<span id="cb10-5"><a href="模型构建及评价.html#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># m=NROW(data)/3</span></span>
+<span id="cb10-6"><a href="模型构建及评价.html#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># #绘图</span></span>
+<span id="cb10-7"><a href="模型构建及评价.html#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># val.prob(P1,data$MYOPIC,m=m,cex=0.8)</span></span></code></pre></div>
+<p>利用glm函数构建：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="模型构建及评价.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model_glm&lt;- glm(MYOPIC~SPHEQ+PARENTS+GENDER+ACD+SPORTHR+READHR,data=myopia,family = &quot;binomial&quot;)</span></span>
+<span id="cb11-2"><a href="模型构建及评价.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># #计算logitP</span></span>
+<span id="cb11-3"><a href="模型构建及评价.html#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pred.logit2 &lt;- predict(model)</span></span>
+<span id="cb11-4"><a href="模型构建及评价.html#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># #预测概率P</span></span>
+<span id="cb11-5"><a href="模型构建及评价.html#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># P2 &lt;- predict(model_glm,type=&quot;response&quot;)</span></span>
+<span id="cb11-6"><a href="模型构建及评价.html#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># #绘图</span></span>
+<span id="cb11-7"><a href="模型构建及评价.html#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># val.prob(P2,data$MYOPIC,m=m,cex = 0.8)# m,subgroups obs</span></span></code></pre></div>
+</div>
+<div id="校正曲线-1" class="section level3 hasAnchor" number="7.1.5">
+<h3><span class="header-section-number">7.1.5</span> 校正曲线<a href="模型构建及评价.html#校正曲线-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="模型构建及评价.html#cb12-1" aria-hidden="true" tabindex="-1"></a>cal1 <span class="ot">&lt;-</span> <span class="fu">calibrate</span>(model,<span class="at">method =</span> <span class="st">&quot;boot&quot;</span>,<span class="at">B=</span><span class="dv">1000</span>)</span>
+<span id="cb12-2"><a href="模型构建及评价.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cal1,<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">1.0</span>),<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">1.0</span>))</span></code></pre></div>
+<p><img src="07-Evaluation_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre><code>## 
+## n=618   Mean absolute error=0.013   Mean squared error=0.00028
+## 0.9 Quantile of absolute error=0.03</code></pre>
+</div>
+<div id="ps同时绘制多条-1" class="section level3 hasAnchor" number="7.1.6">
+<h3><span class="header-section-number">7.1.6</span> ps：同时绘制多条<a href="模型构建及评价.html#ps同时绘制多条-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="模型构建及评价.html#cb14-1" aria-hidden="true" tabindex="-1"></a>formula1 <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(MYOPIC<span class="sc">~</span>SPHEQ)</span>
+<span id="cb14-2"><a href="模型构建及评价.html#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="模型构建及评价.html#cb14-3" aria-hidden="true" tabindex="-1"></a>formula2 <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(MYOPIC<span class="sc">~</span>SPHEQ<span class="sc">+</span>PARENTS<span class="sc">+</span>GENDER<span class="sc">+</span>ACD<span class="sc">+</span>SPORTHR<span class="sc">+</span>READHR)</span>
+<span id="cb14-4"><a href="模型构建及评价.html#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="模型构建及评价.html#cb14-5" aria-hidden="true" tabindex="-1"></a>formula3 <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(MYOPIC<span class="sc">~</span>PARENTS<span class="sc">+</span>GENDER<span class="sc">+</span>ACD<span class="sc">+</span>SPORTHR<span class="sc">+</span>READHR)</span>
+<span id="cb14-6"><a href="模型构建及评价.html#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="模型构建及评价.html#cb14-7" aria-hidden="true" tabindex="-1"></a>DD<span class="ot">=</span><span class="fu">datadist</span>(myopia)</span>
+<span id="cb14-8"><a href="模型构建及评价.html#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">datadist=</span><span class="st">&#39;DD&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="模型构建及评价.html#cb15-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">=</span> <span class="fu">glm</span>(formula1, <span class="at">data=</span>myopia,<span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb15-2"><a href="模型构建及评价.html#cb15-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">=</span> <span class="fu">glm</span>(formula2, <span class="at">data=</span>myopia,<span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb15-3"><a href="模型构建及评价.html#cb15-3" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">=</span> <span class="fu">glm</span>(formula3, <span class="at">data=</span>myopia,<span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb15-4"><a href="模型构建及评价.html#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="模型构建及评价.html#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="模型构建及评价.html#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(riskRegression)</span></code></pre></div>
+<pre><code>## Warning: 程辑包&#39;riskRegression&#39;是用R版本4.1.3 来建造的</code></pre>
+<pre><code>## riskRegression version 2022.03.22</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="模型构建及评价.html#cb18-1" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">Score</span>(<span class="fu">list</span>(<span class="st">&quot;fit1&quot;</span><span class="ot">=</span>fit1,</span>
+<span id="cb18-2"><a href="模型构建及评价.html#cb18-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;fit2&quot;</span><span class="ot">=</span>fit2,</span>
+<span id="cb18-3"><a href="模型构建及评价.html#cb18-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;fit3&quot;</span><span class="ot">=</span>fit3),</span>
+<span id="cb18-4"><a href="模型构建及评价.html#cb18-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">formula=</span>MYOPIC<span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb18-5"><a href="模型构建及评价.html#cb18-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">null.model =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb18-6"><a href="模型构建及评价.html#cb18-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">conf.int =</span><span class="cn">TRUE</span>,</span>
+<span id="cb18-7"><a href="模型构建及评价.html#cb18-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">plots =</span><span class="fu">c</span>(<span class="st">&quot;calibration&quot;</span>,<span class="st">&quot;ROC&quot;</span>),</span>
+<span id="cb18-8"><a href="模型构建及评价.html#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">&quot;auc&quot;</span>),</span>
+<span id="cb18-9"><a href="模型构建及评价.html#cb18-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">B=</span><span class="dv">1000</span>,<span class="at">M=</span><span class="dv">50</span>,</span>
+<span id="cb18-10"><a href="模型构建及评价.html#cb18-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">data=</span>myopia)</span>
+<span id="cb18-11"><a href="模型构建及评价.html#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plotCalibration</span>(xb)</span></code></pre></div>
+<pre><code>## Warning in getLegendData(object = x, models = models, times = tp, auc.in.legend
+## = auc.in.legend, : Cannot show Brier score as it is not stored in object. Set
+## metrics=&#39;brier&#39; in the call of Score.</code></pre>
+<p><img src="07-Evaluation_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>ps:共线性讨论的R实现</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="模型构建及评价.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#collinearity </span></span>
+<span id="cb20-2"><a href="模型构建及评价.html#cb20-2" aria-hidden="true" tabindex="-1"></a>collin <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">subset</span>(myopia, <span class="at">select=</span><span class="fu">c</span>(SPHEQ, PARENTS, SPORTHR, GENDER ,ACD , STUDYHR,READHR)))</span>
+<span id="cb20-3"><a href="模型构建及评价.html#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span>
+<span id="cb20-4"><a href="模型构建及评价.html#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code></pre></div>
+<pre><code>## Warning: 程辑包&#39;corrplot&#39;是用R版本4.1.2 来建造的</code></pre>
+<pre><code>## corrplot 0.92 loaded</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="模型构建及评价.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(collin , <span class="at">type=</span><span class="st">&quot;upper&quot;</span>)</span></code></pre></div>
+<p><img src="07-Evaluation_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="模型构建及评价.html#cb24-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> collin</span>
+<span id="cb24-2"><a href="模型构建及评价.html#cb24-2" aria-hidden="true" tabindex="-1"></a>cor.mtest <span class="ot">&lt;-</span> <span class="cf">function</span>(mat, ...) {</span>
+<span id="cb24-3"><a href="模型构建及评价.html#cb24-3" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(mat)</span>
+<span id="cb24-4"><a href="模型构建及评价.html#cb24-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">ncol</span>(mat)</span>
+<span id="cb24-5"><a href="模型构建及评价.html#cb24-5" aria-hidden="true" tabindex="-1"></a>  p.mat<span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n, n)</span>
+<span id="cb24-6"><a href="模型构建及评价.html#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">diag</span>(p.mat) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb24-7"><a href="模型构建及评价.html#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(n <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb24-8"><a href="模型构建及评价.html#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> (i <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>n) {</span>
+<span id="cb24-9"><a href="模型构建及评价.html#cb24-9" aria-hidden="true" tabindex="-1"></a>      tmp <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(mat[, i], mat[, j], ...)</span>
+<span id="cb24-10"><a href="模型构建及评价.html#cb24-10" aria-hidden="true" tabindex="-1"></a>      p.mat[i, j] <span class="ot">&lt;-</span> p.mat[j, i] <span class="ot">&lt;-</span> tmp<span class="sc">$</span>p.value</span>
+<span id="cb24-11"><a href="模型构建及评价.html#cb24-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb24-12"><a href="模型构建及评价.html#cb24-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-13"><a href="模型构建及评价.html#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(p.mat) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(p.mat) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(mat)</span>
+<span id="cb24-14"><a href="模型构建及评价.html#cb24-14" aria-hidden="true" tabindex="-1"></a>  p.mat</span>
+<span id="cb24-15"><a href="模型构建及评价.html#cb24-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-16"><a href="模型构建及评价.html#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># matrix of the p-value of the correlation</span></span>
+<span id="cb24-17"><a href="模型构建及评价.html#cb24-17" aria-hidden="true" tabindex="-1"></a>p.mat <span class="ot">&lt;-</span> <span class="fu">cor.mtest</span>(<span class="fu">subset</span>(myopia, <span class="at">select=</span><span class="fu">c</span>(SPHEQ, PARENTS,  </span>
+<span id="cb24-18"><a href="模型构建及评价.html#cb24-18" aria-hidden="true" tabindex="-1"></a>                                           SPORTHR, GENDER ,ACD , STUDYHR,READHR)))</span>
+<span id="cb24-19"><a href="模型构建及评价.html#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(p.mat[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code></pre></div>
+<pre><code>##                SPHEQ      PARENTS     SPORTHR       GENDER          ACD
+## SPHEQ   0.000000e+00 1.351303e-06 0.577189469 4.206886e-01 1.841368e-09
+## PARENTS 1.351303e-06 0.000000e+00 0.270789297 5.333279e-01 2.718984e-03
+## SPORTHR 5.771895e-01 2.707893e-01 0.000000000 1.025312e-02 6.185484e-02
+## GENDER  4.206886e-01 5.333279e-01 0.010253119 0.000000e+00 1.757790e-10
+## ACD     1.841368e-09 2.718984e-03 0.061854843 1.757790e-10 0.000000e+00
+## STUDYHR 1.730743e-01 3.891322e-01 0.003930083 5.391071e-01 1.982234e-01
+##             STUDYHR
+## SPHEQ   0.173074294
+## PARENTS 0.389132155
+## SPORTHR 0.003930083
+## GENDER  0.539107149
+## ACD     0.198223365
+## STUDYHR 0.000000000</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="模型构建及评价.html#cb26-1" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;#BB4444&quot;</span>, <span class="st">&quot;#EE9988&quot;</span>, <span class="st">&quot;#FFFFFF&quot;</span>, </span>
+<span id="cb26-2"><a href="模型构建及评价.html#cb26-2" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;#77AADD&quot;</span>, <span class="st">&quot;#4477AA&quot;</span>))</span>
+<span id="cb26-3"><a href="模型构建及评价.html#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="模型构建及评价.html#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#create correlation plot</span></span>
+<span id="cb26-5"><a href="模型构建及评价.html#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(M, <span class="at">method=</span><span class="st">&quot;color&quot;</span>, <span class="at">col=</span><span class="fu">col</span>(<span class="dv">200</span>),  </span>
+<span id="cb26-6"><a href="模型构建及评价.html#cb26-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">type=</span><span class="st">&quot;upper&quot;</span>, <span class="at">order=</span><span class="st">&quot;hclust&quot;</span>, </span>
+<span id="cb26-7"><a href="模型构建及评价.html#cb26-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">&quot;black&quot;</span>, <span class="co"># Add coefficient of correlation</span></span>
+<span id="cb26-8"><a href="模型构建及评价.html#cb26-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.col=</span><span class="st">&quot;black&quot;</span>, <span class="at">tl.srt=</span><span class="dv">45</span>, <span class="co">#Text label color and rotation</span></span>
+<span id="cb26-9"><a href="模型构建及评价.html#cb26-9" aria-hidden="true" tabindex="-1"></a>         <span class="co"># Combine with significance</span></span>
+<span id="cb26-10"><a href="模型构建及评价.html#cb26-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">p.mat =</span> p.mat, <span class="at">sig.level =</span> <span class="fl">0.01</span>, <span class="at">insig =</span> <span class="st">&quot;blank&quot;</span>, </span>
+<span id="cb26-11"><a href="模型构建及评价.html#cb26-11" aria-hidden="true" tabindex="-1"></a>         <span class="co"># hide correlation coefficient on the principal diagonal</span></span>
+<span id="cb26-12"><a href="模型构建及评价.html#cb26-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">diag=</span><span class="cn">FALSE</span> )</span></code></pre></div>
+<p><img src="07-Evaluation_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="模型构建及评价.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(model)</span></code></pre></div>
+<pre><code>##    SPHEQ  PARENTS   GENDER      ACD  SPORTHR   READHR 
+## 1.034080 1.032454 1.101447 1.092771 1.054899 1.060157</code></pre>
+<p>VIF 值 &gt;= 10 表示高共线性。在这种情况下，所有 vif 值都接近 小于10</p>
+
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="随机森林-变量重要性评分.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/yihui/bookdown-chinese/edit/master/07-Evaluation.Rmd",
+"text": "编辑"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown.pdf", "bookdown.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
